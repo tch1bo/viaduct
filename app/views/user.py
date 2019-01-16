@@ -4,7 +4,7 @@ from csv import writer
 from datetime import datetime
 from flask import Blueprint
 from flask import flash, redirect, render_template, request, url_for, abort, \
-    session
+    session, escape
 from flask_babel import _
 from flask_login import current_user, login_user, logout_user, login_required
 from io import StringIO
@@ -742,7 +742,7 @@ def user_export():
     cw.writerow([c.name for c in User.__mapper__.columns])
     for user in users:
         cw.writerow([getattr(user, c.name) for c in User.__mapper__.columns])
-    return si.getvalue().strip('\r\n')
+    return escape(si.getvalue().strip('\r\n'))
 
 
 @blueprint.route('/users/avatar/<int:user_id>/', methods=['GET'])
