@@ -1,7 +1,7 @@
 import datetime
 
 from flask import Blueprint, render_template, request, \
-    jsonify, abort, flash, url_for, redirect
+    jsonify, abort, flash, url_for, redirect, escape
 from flask_login import login_required, current_user
 from flask_babel import _  # gettext
 
@@ -207,11 +207,13 @@ def create_challenge(challenge_id=None):
 
     # Check if the name of the challenge is unique
     if ChallengeAPI.challenge_exists(name):
+        name = escape(name)
         return "Error, challenge with name '" + name + "' already exists"
 
-    return ChallengeAPI.create_challenge(name, description, hint, start_date,
+    resp = ChallengeAPI.create_challenge(name, description, hint, start_date,
                                          end_date, parent_id, weight, type,
                                          answer)
+    return escape(resp)
 
 
 @blueprint.route('/api/new_submission', methods=['GET', 'POST'])
